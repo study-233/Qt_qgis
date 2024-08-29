@@ -14,14 +14,17 @@ LIBS += -L"D:\\OSGeo4W\\apps\\qgis-ltr-dev\\lib" -lqgis_app -lqgis_core -lqgis_g
 SOURCES += \
     main.cpp \
     mainwindows.cpp \
-    qgis_devlayertreeviewmenuprovider.cpp
+    qgis_devlayertreeviewmenuprovider.cpp \
+    segmentation.cpp
 
 HEADERS += \
     mainwindows.h \
-    qgis_devlayertreeviewmenuprovider.h
+    qgis_devlayertreeviewmenuprovider.h \
+    segmentation.h
 
 FORMS += \
-    mainwindows.ui
+    mainwindows.ui \
+    segmentation.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

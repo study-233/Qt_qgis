@@ -31,6 +31,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    static MainWindow* instance() { return my; }
+
 private slots:
     void on_actionOpen_raster_triggered();
 
@@ -38,8 +40,11 @@ private slots:
 
     void on_actionRemove_file_triggered();
 
+    void slot_autoSelectAddedLayer(QList<QgsMapLayer*> layers);
+
 private:
     Ui::MainWindow *ui;
+    static MainWindow *my;
 
     //地图画布
     QgsMapCanvas* mapCanvas;
@@ -51,5 +56,6 @@ private:
 
 public:
     void initLayerTreeView();               //初始化图层管理器函数
+    void addDockWidget(Qt::DockWidgetArea area, QDockWidget* dockwidget); //添加可悬浮窗口初始位置
 };
 #endif // MAINWINDOW_H

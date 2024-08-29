@@ -26,9 +26,13 @@ public:
     QAction *actionOpen_raster;
     QAction *actionOpen_vector;
     QAction *actionRemove_file;
+    QAction *actionAbout;
+    QAction *actionSegmentation;
     QWidget *centralwidget;
     QMenuBar *menubar;
     QMenu *menuFile;
+    QMenu *menuHelp;
+    QMenu *menuTool;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -36,12 +40,17 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->resize(837, 618);
+        MainWindow->setStyleSheet(QString::fromUtf8(""));
         actionOpen_raster = new QAction(MainWindow);
         actionOpen_raster->setObjectName(QString::fromUtf8("actionOpen_raster"));
         actionOpen_vector = new QAction(MainWindow);
         actionOpen_vector->setObjectName(QString::fromUtf8("actionOpen_vector"));
         actionRemove_file = new QAction(MainWindow);
         actionRemove_file->setObjectName(QString::fromUtf8("actionRemove_file"));
+        actionAbout = new QAction(MainWindow);
+        actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
+        actionSegmentation = new QAction(MainWindow);
+        actionSegmentation->setObjectName(QString::fromUtf8("actionSegmentation"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         MainWindow->setCentralWidget(centralwidget);
@@ -50,15 +59,23 @@ public:
         menubar->setGeometry(QRect(0, 0, 837, 21));
         menuFile = new QMenu(menubar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
+        menuHelp = new QMenu(menubar);
+        menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
+        menuTool = new QMenu(menubar);
+        menuTool->setObjectName(QString::fromUtf8("menuTool"));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
         MainWindow->setStatusBar(statusbar);
 
         menubar->addAction(menuFile->menuAction());
+        menubar->addAction(menuTool->menuAction());
+        menubar->addAction(menuHelp->menuAction());
         menuFile->addAction(actionOpen_raster);
         menuFile->addAction(actionOpen_vector);
         menuFile->addAction(actionRemove_file);
+        menuHelp->addAction(actionAbout);
+        menuTool->addAction(actionSegmentation);
 
         retranslateUi(MainWindow);
 
@@ -71,7 +88,11 @@ public:
         actionOpen_raster->setText(QCoreApplication::translate("MainWindow", "Open raster", nullptr));
         actionOpen_vector->setText(QCoreApplication::translate("MainWindow", "Open vector", nullptr));
         actionRemove_file->setText(QCoreApplication::translate("MainWindow", "Remove file", nullptr));
+        actionAbout->setText(QCoreApplication::translate("MainWindow", "About", nullptr));
+        actionSegmentation->setText(QCoreApplication::translate("MainWindow", "Segmentation", nullptr));
         menuFile->setTitle(QCoreApplication::translate("MainWindow", "File", nullptr));
+        menuHelp->setTitle(QCoreApplication::translate("MainWindow", "Help", nullptr));
+        menuTool->setTitle(QCoreApplication::translate("MainWindow", "Tool", nullptr));
     } // retranslateUi
 
 };

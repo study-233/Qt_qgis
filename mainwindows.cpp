@@ -10,6 +10,13 @@
 #include "qgslayertreemodel.h"            //使用给定层树构建新的树模型,一般与QgsLayerTreeView 一起使用
 #include "qgridlayout.h"                  //栅格布局管理器
 
+#include "qtoolbutton.h"                  //工具按钮,和普通工具相比可以带图标
+#include "qdockwidget.h"                  //可悬浮窗口
+#include "qgis_devlayertreeviewmenuprovider.h" //图层管理器右键菜单类
+#include "qgslayertreeregistrybridge.h"        //创建与层树根同步给定项目的实例,收听地图层注册表中的更新，并在层树中进行更改。
+
+MainWindow *MainWindow::my = nullptr;
+
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -20,7 +27,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    qDebug()<<Qgis::releaseName();
+    my = this;
+
+    //qDebug()<<Qgis::releaseName();
 
     this->resize(1200, 800);               //设置MyQGIS01类窗口大小
 
@@ -42,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     //栅格布局
     QWidget* centralWidget = this->centralWidget();
     QGridLayout* centralLayout = new QGridLayout(centralWidget);
-    centralLayout->addWidget(layerTreeView, 0, 0, 2, 1);                 //图层管理器位置
+    //centralLayout->addWidget(layerTreeView, 0, 0, 2, 1);                 //图层管理器位置
     centralLayout->addWidget(mapCanvas, 0, 1, 2, 1);                     //画布位置 后面四个参数：初始行列 占位行类
 
 }
@@ -137,6 +146,77 @@ void MainWindow::initLayerTreeView()
     layerTreeView->setModel(model);
     layerTreeView->setFixedWidth(200);
 
+    //------------------------------------------------
+    // 新增
+
+    //右键菜单
+    layerTreeView->setMenuProvider(new qgis_devLayerTreeViewMenuProvider(layerTreeView, mapCanvas));
+    //connect(QgsProject::instance()->layerTreeRegistryBridge(), SIGNAL(addedLayersToLayerTree(const QList<QgsMapLayer*>)), this,
+    //    SLOT(slot_autoSelectAddedLayer(const QList<QgsMapLayer*>)));
+    connect(QgsProject::instance()->layerTreeRegistryBridge(), &QgsLayerTreeRegistryBridge::addedLayersToLayerTree, this,
+            &MainWindow::slot_autoSelectAddedLayer);
+
+    // 设置这个路径是为了获取图标文件
+    QString iconDir = "E:\\QtDocuments\\My_Qgis\\image\\"; //注意包含中文路径图标会不显示，这里的图标可以去原QGIS软件中去找
+
+    // add group tool button
+    QToolButton* btnAddGroup = new QToolButton();
+    btnAddGroup->setAutoRaise(true);
+    btnAddGroup->setIcon(QIcon(iconDir + "layer-group-add.png"));
+    btnAddGroup->setFixedSize(24, 24);
+    btnAddGroup->setToolTip(tr("Add Group"));
+    connect(btnAddGroup, SIGNAL(clicked()), layerTreeView->defaultActions(), SLOT(addGroup()));
+
+    // expand / collapse tool buttons
+    QToolButton* btnExpandAll = new QToolButton();
+    btnExpandAll->setAutoRaise(true);
+    btnExpandAll->setIcon(QIcon(iconDir + "mActionExpandTree.png"));
+    btnAddGroup->setFixedSize(24, 24);
+    btnExpandAll->setToolTip(tr("Expand All"));
+    connect(btnExpandAll, SIGNAL(clicked()), layerTreeView, SLOT(expandAll()));
+
+    QToolButton* btnCollapseAll = new QToolButton();
+    btnCollapseAll->setAutoRaise(true);
+    btnCollapseAll->setIcon(QIcon(iconDir + "mActionCollapseTree.png"));
+    btnAddGroup->setFixedSize(24, 24);
+    btnCollapseAll->setToolTip(tr("Collapse All"));
+    connect(btnCollapseAll, SIGNAL(clicked()), layerTreeView, SLOT(collapseAll()));
+
+    // remove item button
+    QToolButton* btnRemoveItem = new QToolButton();
+    // btnRemoveItem->setDefaultAction( this->m_actionRemoveLayer );
+    btnRemoveItem->setAutoRaise(true);
+    btnRemoveItem->setIcon(QIcon(iconDir + "layer-remove.png"));
+    btnAddGroup->setFixedSize(24, 24);
+    btnRemoveItem->setToolTip(tr("Remove"));
+    connect(btnRemoveItem, SIGNAL(clicked()), layerTreeView, SLOT(remove()));
+
+    // 按钮布局
+    QHBoxLayout* toolbarLayout = new QHBoxLayout();
+    toolbarLayout->setContentsMargins(QMargins(5, 0, 5, 0));
+    toolbarLayout->addWidget(btnAddGroup);
+    toolbarLayout->addWidget(btnCollapseAll);
+    toolbarLayout->addWidget(btnExpandAll);
+    toolbarLayout->addWidget(btnRemoveItem);
+    toolbarLayout->addStretch();
+
+    QVBoxLayout* vboxLayout = new QVBoxLayout();
+    vboxLayout->setMargin(0);
+    vboxLayout->addLayout(toolbarLayout);
+    vboxLayout->addWidget(layerTreeView);
+
+    // 装进dock widget中
+    QDockWidget* m_layerTreeDock = new QDockWidget(tr("Layers"), this);
+    m_layerTreeDock->setObjectName("Layers");
+    m_layerTreeDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+    QWidget* w = new QWidget();
+    w->setLayout(vboxLayout);
+    m_layerTreeDock->setWidget(w);
+    addDockWidget(Qt::LeftDockWidgetArea, m_layerTreeDock);        //初始位置
+
+    // 新增
+    //------------------------------------------------
 
     // 连接地图画布和图层管理器
     layerTreeCanvasBridge = new QgsLayerTreeMapCanvasBridge(QgsProject::instance()->layerTreeRoot(), mapCanvas, this);
@@ -145,3 +225,30 @@ void MainWindow::initLayerTreeView()
     connect(QgsProject::instance(), SIGNAL(readProject(QDomDocument)),
             layerTreeCanvasBridge, SLOT(readProject(QDomDocument)));
 }
+//*新增
+void MainWindow::slot_autoSelectAddedLayer(const QList<QgsMapLayer*> layers)
+{
+    if (!layers.isEmpty())
+    {
+        QgsLayerTreeLayer* nodeLayer = QgsProject::instance()->layerTreeRoot()->findLayer(layers[0]->id());
+
+        if (!nodeLayer)
+            return;
+
+        QModelIndex index = layerTreeView->layerTreeModel()->node2index(nodeLayer);
+        layerTreeView->setCurrentIndex(index);
+    }
+}
+
+void MainWindow::addDockWidget(Qt::DockWidgetArea area, QDockWidget* dockwidget)
+{
+    QMainWindow::addDockWidget(area, dockwidget);
+    setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
+    setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+    setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
+    setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+
+    dockwidget->show();
+    mapCanvas->refresh();
+}
+//*新增
