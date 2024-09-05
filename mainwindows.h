@@ -4,7 +4,10 @@
 #include <QMainWindow>
 #include <QtMath>
 
-//自己引入的库
+//工具类
+#include "segmentationdockwidget.h"
+
+//库
 #include <qmenu.h>                  //QT菜单类
 #include <qaction.h>                //QT行为类
 
@@ -42,9 +45,28 @@ private slots:
 
     void slot_autoSelectAddedLayer(QList<QgsMapLayer*> layers);
 
+    void showAllLayers();
+
+    void hideAllLayers();
+
+    void showSelectedLayers();
+
+    void hideSelectedLayers();
+
+    void removeLayer();
+
+    void slot_save_layout();
+
+    void slot_restart_layout();
 private:
     Ui::MainWindow *ui;
     static MainWindow *my;
+
+    SegmentationDockWidget *mSegmentation = nullptr;
+    QDockWidget* m_layerTreeDock = nullptr;
+
+    QAction *save_layout,*restart_layout;
+    QSettings *setting; //保存布局用的配置文件类,也可以用别的方式保存
 
     //地图画布
     QgsMapCanvas* mapCanvas;
@@ -57,5 +79,6 @@ private:
 public:
     void initLayerTreeView();               //初始化图层管理器函数
     void addDockWidget(Qt::DockWidgetArea area, QDockWidget* dockwidget); //添加可悬浮窗口初始位置
+    void legendLayerZoomNative();
 };
 #endif // MAINWINDOW_H

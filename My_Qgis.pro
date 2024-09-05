@@ -15,16 +15,18 @@ SOURCES += \
     main.cpp \
     mainwindows.cpp \
     qgis_devlayertreeviewmenuprovider.cpp \
-    segmentation.cpp
+    segmentationdockwidget.cpp
 
 HEADERS += \
     mainwindows.h \
     qgis_devlayertreeviewmenuprovider.h \
-    segmentation.h
+    segmentationdockwidget.h
 
 FORMS += \
     mainwindows.ui \
-    segmentation.ui
+    segmentationdockwidget.ui
+
+UI_DIR=./UI
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

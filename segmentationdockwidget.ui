@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SegmentationDockWidget</class>
+ <widget class="QDockWidget" name="SegmentationDockWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>388</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>350</width>
+    <height>230</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Segmentation</string>
+  </property>
+  <widget class="QWidget" name="dockWidgetContents">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>380</width>
+         <height>349</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,0,0">
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_15">
+          <property name="text">
+           <string>预测模型：</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLineEdit" name="lineEdit_svgName">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="QLabel" name="label_14">
+          <property name="text">
+           <string>问题描述 :</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string>预测结果存储位置 :</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="QLineEdit" name="lineEdit_svgInf">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QPushButton" name="pushButton_selectUpl">
+          <property name="text">
+           <string>浏览...</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_13">
+          <property name="text">
+           <string>图像样本：</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="lineEdit_Path">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1" colspan="2">
+         <widget class="QComboBox" name="comboBox_shape">
+          <item>
+           <property name="text">
+            <string>Square</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Diamond</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Pentagon</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Hexagon</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Triangle</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>EquilateralTriangle</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Star</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Arrow</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Circle</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="label_12">
+          <property name="text">
+           <string>预测结果名称 :</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="2">
+         <widget class="QPushButton" name="pushButton_selectSvg">
+          <property name="text">
+           <string>浏览...</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLineEdit" name="lineEdit_svgPath">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="2">
+         <widget class="QPushButton" name="pushButton_cancel">
+          <property name="text">
+           <string>取消</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="1">
+         <widget class="QPushButton" name="pushButton_start">
+          <property name="text">
+           <string>开始</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="0">
+         <widget class="QProgressBar" name="progressBar">
+          <property name="value">
+           <number>24</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

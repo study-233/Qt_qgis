@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string/>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -44,7 +44,6 @@
     <property name="title">
      <string>Tool</string>
     </property>
-    <addaction name="actionSegmentation"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTool"/>

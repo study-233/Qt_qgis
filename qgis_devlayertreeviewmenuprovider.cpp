@@ -44,7 +44,7 @@ QMenu* qgis_devLayerTreeViewMenuProvider::createContextMenu()
         if (QgsLayerTree::isGroup(node))
         {
             menu->addAction(actions->actionZoomToGroup(m_mapCanvas, menu));
-            menu->addAction(QIcon(iconDir + "layer-remove.png"), QObject::tr("&Remove"), MainWindow::instance(), SLOT(removeLayer()));
+            menu->addAction(actions->actionRemoveGroupOrLayer(menu));
             menu->addAction(actions->actionRenameGroupOrLayer(menu));
             if (m_layerTreeView->selectedNodes(true).count() >= 2)
             {
@@ -55,9 +55,17 @@ QMenu* qgis_devLayerTreeViewMenuProvider::createContextMenu()
         else if (QgsLayerTree::isLayer(node))
         {
             QgsMapLayer* layer = QgsLayerTree::toLayer(node)->layer();
-            menu->addAction(actions->actionZoomToLayer(m_mapCanvas, menu));
-            //menu->addAction(actions->actionShowInOverview(menu));
+
+            if ( layer && layer->isSpatial() )
+            {
+                //添加zoom to layer右键菜单项目
+                QAction *zoomToLayers = actions->actionZoomToLayers(m_mapCanvas, menu );
+                zoomToLayers->setEnabled( layer->isValid() );
+                menu->addAction(zoomToLayers);
+            }
+
             menu->addAction(actions->actionRemoveGroupOrLayer(menu));
+
             menu->addAction(QObject::tr("&Label"), MainWindow::instance(), SLOT(slot_labelShowAction()));
 
             // 如果选择的是矢量图层
@@ -78,7 +86,11 @@ QMenu* qgis_devLayerTreeViewMenuProvider::createContextMenu()
             // 如果选择的是栅格图层
             if (layer && layer->type() == Qgis::LayerType::Raster)
             {
-                // TO DO:
+                QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+
+                QAction *zoomToNative = menu->addAction( QIcon(iconDir + "mActionZoomActual.png"), tr( "Zoom to Nat&ive Resolution (100%)" ), MainWindow::instance(), &MainWindow::legendLayerZoomNative );
+                zoomToNative->setEnabled( rlayer->isValid() );
+
             }
         }
     }
